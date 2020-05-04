@@ -1,0 +1,15 @@
+{
+    "version": 1,
+    "i18n": {
+        "locale": "en",
+        "translations": {}
+    },
+    "fetchers": {
+        "login": false
+    },
+    "messages": [],
+    "user": {
+        "token": null,
+        "data": {}
+    }
+}

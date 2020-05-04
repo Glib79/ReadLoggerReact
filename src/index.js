@@ -1,13 +1,56 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import { Provider } from 'react-redux';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import initialData from './config/initialState';
+import storeFactory from './redux/store';
+import { loadTranslations, syncTranslationWithStore } from 'react-redux-i18n';
+import { addMessage } from './redux/actions/messages';
+import { logout } from './redux/actions/user';
+import App from './components/App';
+import translations from './l10n/translations';
 import * as serviceWorker from './serviceWorker';
 
+const initialState = (initialData) => {
+  const store =  (localStorage['redux-store']) ?
+    JSON.parse(localStorage['redux-store']) :
+    {version: 0};
+
+  if (store.version < initialData.version) {
+    return initialData;
+  }
+  
+  return store;
+}
+
+const saveState = () => {
+  localStorage['redux-store'] = JSON.stringify(store.getState());
+}
+
+const handleError = error => {
+  if (error.error && error.error.response && error.error.response.status === 401) {
+    store.dispatch(
+      logout()
+    );
+  } else {
+    store.dispatch(
+      addMessage(error.message, 'danger')
+    );
+  }
+}
+
+const store = storeFactory(initialState(initialData));
+store.subscribe(saveState);
+
+syncTranslationWithStore(store);
+store.dispatch(loadTranslations(translations));
+
+window.addEventListener('error', handleError);
+
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById('root')
 );
 
