@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import { Translate, I18n } from "react-redux-i18n";
 import { addMessage } from '../../redux/actions/messages';
-import { handleErrors } from '../../config/api';
+import { prepareOptions, handleErrors } from '../../config/api';
 import Select from 'react-select';
+import DatePicker from 'react-datepicker';
 import AutoselectHandler from '../support/AutoselectHandler';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
@@ -12,7 +15,9 @@ import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Spinner from 'react-bootstrap/Spinner';
 
-const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f }) => {
+import "react-datepicker/dist/react-datepicker.css";
+
+const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleErrors=f=>f }) => {
     const data = resource.read();
     const dataFormat = data.data.format.map(row => {
         return {
@@ -32,16 +37,42 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
     const defaultLanguage = dataLanguage.findIndex((element, index, array) => {
         return element.symbol === locale;
     });
-    
+
+    const dataRating = [
+        {value: 1, label: I18n.t('rating.1')},
+        {value: 2, label: I18n.t('rating.2')},
+        {value: 3, label: I18n.t('rating.3')},
+        {value: 4, label: I18n.t('rating.4')},
+        {value: 5, label: I18n.t('rating.5')}
+    ];
+
+    const dataStatus = data.data.status.map(row => {
+        return {
+            value: row.id,
+            label: I18n.t(row.translationKey)
+        };
+    });
+
     const [fetching, setFetching] = useState(false);
+    const [bookAdded, setBookAdded] = useState(false);
 
     const [bookNotOnList, setBookNotOnList] = useState(false);
+    const [showDates, setShowDates] = useState({
+        startDate: false, 
+        endDate:false,
+        rating: false
+    });
 
+    const [endDate, setEndDate] = useState(new Date());
     const [firstName, setFirstName] = useState('');
     const [format, setFormat] = useState(dataFormat[0].value);
-    const [language, setLanguage] = useState(dataLanguage[0].value);
+    const [language, setLanguage] = useState(dataLanguage[defaultLanguage].value);
     const [lastName, setLastName] = useState('');
+    const [notes, setNotes] = useState('');
+    const [rating, setRating] = useState();
     const [size, setSize] = useState();
+    const [startDate, setStartDate] = useState(new Date());
+    const [status, setStatus] = useState(dataStatus[0].value);
     const [subTitle, setSubTitle] = useState('');
     const [title, setTitle] = useState('');
      
@@ -49,9 +80,96 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
     const [book, setBook] = useState({});
   
     const [authorError, setAuthorError] = useState(false);
+    const [bookError, setBookError] = useState(false);
+    const [endDateError, setEndDateError] = useState(false);
+    const [noAuthorError, setNoAuthorError] = useState(false);
+    const [startDateError, setStartDateError] = useState(false);
+    const [titleError, setTitleError] = useState(false);
   
     const onSubmit = e => {
         e.preventDefault();
+        
+        if (validateForm()) {
+            setFetching(true);
+
+            let rBook = {};
+
+            if (!bookNotOnList) {
+                rBook = {id: book.id};
+            } else {
+                rBook = {
+                    title: title,
+                    subTitle: subTitle ? subTitle : null,
+                    size: size ? size : null,
+                    authors: authors
+                };
+            }
+
+            const userBook = {
+                book: rBook,
+                format: {id: format},
+                language: {id: language},
+                status: {id: status},
+                startDate: showDates.startDate ? I18n.l(startDate, { dateFormat: 'date.api' }) : null,
+                endDate: showDates.endDate ? I18n.l(endDate, { dateFormat: 'date.api' }) : null,
+                rating: showDates.rating ? rating : null,
+                notes: notes
+            };
+            
+            const options = prepareOptions('/api/user-book', 'POST', userBook, { token: user.token });
+
+            axios(options)
+              .then(response => {
+                addMessage('addBookForm.successMessage', 'success');
+        
+                setBookAdded(true);
+              })
+              .catch(error => {
+                handleErrors(error);
+              });
+
+            setFetching(false);
+        }
+    };
+    
+    const validateForm = () => {
+        let isValid = true;
+        
+        setBookError(false);
+        setTitleError(false);
+        setNoAuthorError(false);
+        if (!bookNotOnList) {
+            if (!book.id) {
+                setBookError(true);
+                isValid = false;
+            }
+        } else {
+            if (!title) {
+                setTitleError(true);
+                isValid = false;
+            }
+            if (authors.length === 0) {
+                setNoAuthorError(true);
+                isValid = false;
+            }
+        }
+        
+        setStartDateError(false);
+        setEndDateError(false);
+        if (showDates.startDate) {
+            if (!startDate) {
+                setStartDateError(true);
+                isValid = false;
+            }
+        }
+        if (showDates.endDate) {
+            if (!endDate || startDate.getTime() > endDate.getTime()) {
+                setEndDateError(true);
+                isValid = false;
+            }
+        }
+        
+        return isValid;
     };
 
     const authorsOptions = (data) => {
@@ -82,6 +200,10 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
         setBookNotOnList(!bookNotOnList);
     };
 
+    const onChangeEndDate = date => {
+       setEndDate(date);
+    };
+  
     const onChangeFirstName = e => {
         setFirstName(e.target.value);
     };
@@ -98,8 +220,45 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
         setLastName(e.target.value);
     };
 
+    const onChangeNotes = e => {
+        setNotes(e.target.value);
+    };
+
+    const onChangeRating = selected => {
+        if (!selected) {
+            setRating(null);  
+        } else {
+            setRating(selected.value);
+        }
+    };
+
     const onChangeSize = e => {
         setSize(e.target.value);
+    };
+
+    const onChangeStartDate = date => {
+       setStartDate(date);
+    };
+  
+    const onChangeStatus = selected => {
+        setStatus(selected.value);
+        
+        switch (parseInt(selected.value)) {
+            case 1:
+                setShowDates({startDate: false, endDate: false, rating: false});
+                break;
+            case 2:
+                setShowDates({startDate: true, endDate: false, rating: false});
+                break;
+            case 3:
+                setShowDates({startDate: true, endDate: true, rating: true});
+                break;
+            case 4:
+                setShowDates({startDate: true, endDate: false, rating: true});
+                break;
+            default:
+                setShowDates({startDate: false, endDate: false, rating: false});
+        }
     };
 
     const onChangeSubTitle = e => {
@@ -108,6 +267,11 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
     
     const onChangeTitle = e => {
         setTitle(e.target.value);
+        
+        setTitleError(false);
+        if (!e.target.value) {
+            setTitleError(true);
+        }
     };
     
     const onClickAddAuthor = () => {
@@ -137,6 +301,10 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
         );
     };
     
+    if (bookAdded) {
+        return(<Redirect push to="/dashboard" />);
+    };
+    
     return (
         <Form onSubmit={onSubmit}>
             {!bookNotOnList &&
@@ -144,6 +312,9 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
                 <Form.Label>
                     <Translate value='addBookForm.bookTitle' />  
                 </Form.Label>
+                {bookError && <Form.Text className="text-danger">
+                    <Translate value='addBookForm.bookError' />
+                </Form.Text>}
                 <AutoselectHandler 
                     name='books'
                     setValue={setBook}
@@ -167,6 +338,9 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
                     <Form.Label>
                         <Translate value='addBookForm.bookNewBook' />  
                     </Form.Label>
+                    {titleError && <Form.Text className="text-danger">
+                        <Translate value='addBookForm.titleError' />
+                    </Form.Text>}
                     <Form.Control 
                         type="text" 
                         value={title}
@@ -210,6 +384,9 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
                         })}
                     </ListGroup>
                 </Form.Group>}
+                {noAuthorError && <Form.Text className="text-danger">
+                    <Translate value='addBookForm.noAuthorError' />
+                </Form.Text>}
                 <Form.Group controlId="bookAuthorAutoselect">
                     <Form.Label>
                         <Translate value='addBookForm.authorTitle' />  
@@ -271,6 +448,74 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
                     options={dataLanguage}
                 />
             </Form.Group>
+            <Form.Group controlId="bookStatusSelect">
+                <Form.Label>
+                    <Translate value='addBookForm.bookStatus' />  
+                </Form.Label>
+                <Select 
+                    defaultValue={dataStatus[0]}
+                    onChange={onChangeStatus}
+                    options={dataStatus}
+                />
+            </Form.Group>
+            {showDates.startDate &&
+            <Form.Group controlId="bookStartDatePicker">
+                <Form.Label>
+                    <Translate value='addBookForm.bookStartDate' />  
+                </Form.Label>
+                {startDateError && <Form.Text className="text-danger">
+                    <Translate value='addBookForm.startDateError' />
+                </Form.Text>}
+                <br />
+                <DatePicker
+                    locale={locale}
+                    selected={startDate}
+                    onChange={onChangeStartDate}
+                    dateFormat={I18n.t('date.datepicker')}
+                    className="form-control"
+                />
+            </Form.Group>
+            }
+            {showDates.endDate && 
+            <Form.Group controlId="bookEndDatePicker">
+                <Form.Label>
+                    <Translate value='addBookForm.bookEndDate' />  
+                </Form.Label>
+                {endDateError && <Form.Text className="text-danger">
+                    <Translate value='addBookForm.endDateError' />
+                </Form.Text>}
+                <br />
+                <DatePicker
+                    locale={locale}
+                    selected={endDate}
+                    minDate={startDate}
+                    onChange={onChangeEndDate}
+                    dateFormat={I18n.t('date.datepicker')}
+                    className="form-control"
+                />
+            </Form.Group>
+            }
+            {showDates.rating &&
+            <Form.Group controlId="bookRatingSelect">
+                <Select 
+                    placeholder={I18n.t('addBookForm.bookRating')}
+                    isClearable
+                    onChange={onChangeRating}
+                    options={dataRating}
+                />
+            </Form.Group>
+            }
+            <Form.Group controlId="bookNotesTextarea">
+                <Form.Label>
+                    <Translate value='addBookForm.bookNotes' />
+                </Form.Label>
+                <Form.Control 
+                    as="textarea" 
+                    rows="3" 
+                    value={notes} 
+                    onChange={onChangeNotes} 
+                />
+            </Form.Group>
             <Button variant="primary" disabled={fetching} type={fetching ? "" : "submit"}>
                 {(fetching)
                   ? <Spinner 
@@ -290,6 +535,7 @@ const AddBookForm = ({ locale='en', resource, addMessage=f=>f, handleErrors=f=>f
 AddBookForm.propTypes = {
     locale: PropTypes.string.isRequired,
     resource: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
     addMessage: PropTypes.func.isRequired,
     handleErrors: PropTypes.func.isRequired
 };
@@ -297,7 +543,8 @@ AddBookForm.propTypes = {
 const mapStateToProps = (state, props) => {
     return {
         locale: state.i18n.locale,
-        resouce: props.resource
+        resouce: props.resource,
+        user: state.user
     };
 };
 

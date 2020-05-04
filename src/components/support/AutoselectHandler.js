@@ -37,6 +37,7 @@ const AutoselectHandler = ({ multiple=false, name='', responseToOptions=f=>f, us
                     id: selected.value,
                     label: selected.label
                 });
+                setInput(selected);
             } else {
                 setValue({});
             }

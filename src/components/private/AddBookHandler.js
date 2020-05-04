@@ -10,7 +10,7 @@ import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 
 const AddBookHandler = ({ user={} }) => {
-  const [resource] = useState(() => fetchData('/api/support/format-language', 'GET', {}, { token: user.token }));
+  const [resource] = useState(() => fetchData('/api/support/format-language-status', 'GET', {}, { token: user.token }));
 
   return (
     <ErrorBoundary>

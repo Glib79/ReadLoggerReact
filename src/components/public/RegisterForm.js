@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom'
-import { Translate, I18n } from "react-redux-i18n";
+import { Redirect } from 'react-router-dom';
+import { Translate, I18n } from 'react-redux-i18n';
 import axios from 'axios';
 import { addMessage } from '../../redux/actions/messages';
 import { prepareOptions, handleErrors } from '../../config/api';

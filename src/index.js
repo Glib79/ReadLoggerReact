@@ -9,6 +9,8 @@ import { addMessage } from './redux/actions/messages';
 import { logout } from './redux/actions/user';
 import App from './components/App';
 import translations from './l10n/translations';
+import { registerLocale } from  "react-datepicker";
+import pl from 'date-fns/locale/pl';
 import * as serviceWorker from './serviceWorker';
 
 const initialState = (initialData) => {
@@ -21,11 +23,11 @@ const initialState = (initialData) => {
   }
   
   return store;
-}
+};
 
 const saveState = () => {
   localStorage['redux-store'] = JSON.stringify(store.getState());
-}
+};
 
 const handleError = error => {
   if (error.error && error.error.response && error.error.response.status === 401) {
@@ -37,7 +39,7 @@ const handleError = error => {
       addMessage(error.message, 'danger')
     );
   }
-}
+};
 
 const store = storeFactory(initialState(initialData));
 store.subscribe(saveState);
@@ -46,6 +48,8 @@ syncTranslationWithStore(store);
 store.dispatch(loadTranslations(translations));
 
 window.addEventListener('error', handleError);
+
+registerLocale('pl', pl);
 
 ReactDOM.render(
   <Provider store={store}>

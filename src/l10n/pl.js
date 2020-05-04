@@ -1,4 +1,10 @@
 const pl = {
+    date: {
+        long: "Do MMMM YYYY",
+        short: "D MMM YYYY",
+        datepicker: "MMM d yyyy",
+        api: "YYYY-MM-DD"
+    },
     actions: {
         logout: "Został(a)eś wylogowan(a)y.",
         wrongLoginData: "Podane dane logowania są nieprawidłowe!"
@@ -40,6 +46,13 @@ const pl = {
     notFound: {
         notFound: "Strony nie znaleziono"
     },
+    rating: {
+        1: "Kiepska",
+        2: "Poniżej oczekiwań",
+        3: "Przeciętna",
+        4: "Powyżej oczekiwań",
+        5: "Wyśmienita"
+    },
     registerForm: {
         enterEmail: "Podaj email",
         registerSubmit: "Wyślij",
@@ -52,6 +65,12 @@ const pl = {
         repeatPassword: "Powtórz hasło",
         successMessage: "Konto zostało utworzone",
         title: "Rejestracja"
+    },
+    status: {
+        abandoned: "Porzucona",
+        during: "W trakcie",
+        finished: "Ukończona",
+        planned: "Planowana"  
     },
     statusBar: {
         brand: "Czytacz",
