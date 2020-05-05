@@ -13,6 +13,6 @@ const NotFound = () => {
       </Col>
     </Row>
   );
-}
+};
 
 export default NotFound;

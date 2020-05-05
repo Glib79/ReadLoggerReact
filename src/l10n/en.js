@@ -47,13 +47,14 @@ const en = {
     booksList: {
         author: "Author(s)",
         endDate: "Reading end date",
-        format: "Book format",
         noBooks: "You have no books on your list yet.",
         startDate: "Reading start date",
+        status: "Book status",
         title: "Title"
     },
     dashboard: {
         addBook: "Add Book",
+        statusFilterPlaceholder: "Filter by status",
         welcome: "Dashboard after log in"
     },
     format: {

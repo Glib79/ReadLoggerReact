@@ -8,6 +8,34 @@ const pl = {
     actions: {
         logout: "Został(a)eś wylogowan(a)y.",
         wrongLoginData: "Podane dane logowania są nieprawidłowe!"
+    },
+    addBookForm: {
+        authorError: "Autor musi mieć imię i nazwisko!",
+        authorNotOnList: "Jeśli nie ma autora na liście, dodaj go",
+        authorTitle: "Aby dodać autora do książki, znajdź go na liście poniżej",
+        authors: "Autorzy dodani do książki",
+        bookEndDate: "Data zakończenia czytania",
+        bookError: "Nie wybrałe(a)ś książki!",
+        bookFormat: "Format książki",
+        bookLanguage: "Język książki",
+        bookNewBook: "Dodaj nową książkę:",
+        bookNotes: "Twoje notatki dotyczące książki",
+        bookNotOnList: "Nie mogę zanleźć książki na liście.",
+        bookRating: "Twoja ocena książki",
+        bookStatus: "Status książki",
+        bookStartDate: "Data rozpoczęcia czytania",
+        bookTitle: "Aby dodać książkę do swojej listy, znajdź ją na liście poniżej.",
+        endDateError: "Data zakończenia czytania jest wymagana i musi być późniejsza niż data rozpoczęcia czytania.",
+        firstName: "Imię autora",
+        lastName: "Nazwisko autora",
+        noAuthorError: "Książka musi mieć autora!",
+        size: "Liczba stron",
+        startDateError: "Data rozpoczęcia czytania jest wymagana!",
+        submit: "Wyślij",
+        subTitle: "Podtytuł",
+        successMessage: "Książka dodana.",
+        title: "Tytuł",
+        titleError: "Książka musi mieć tytuł!"
     },    
     addBookHandler: {
       title: "Dodaj nową książkę"  
@@ -19,13 +47,14 @@ const pl = {
     booksList:{
         author: "Autor(ży)",
         endDate: "Koniec czytania",
-        format: "Format książki",
         noBooks: "Nie masz jeszcze książek na swojej liście.",
         startDate: "Początek czytania",
+        status: "Status książki",
         title: "Tytuł"
     },
     dashboard: {
         addBook: "Dodaj książkę",
+        statusFilterPlaceholder: "Filtruj po statusie",
         welcome: "Dashboard po zalogowaniu"
     },
     format: {

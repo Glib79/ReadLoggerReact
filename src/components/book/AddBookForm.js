@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -70,7 +70,7 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
     const [lastName, setLastName] = useState('');
     const [notes, setNotes] = useState('');
     const [rating, setRating] = useState();
-    const [size, setSize] = useState();
+    const [size, setSize] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [status, setStatus] = useState(dataStatus[0].value);
     const [subTitle, setSubTitle] = useState('');
