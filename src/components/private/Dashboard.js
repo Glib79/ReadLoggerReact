@@ -12,13 +12,25 @@ import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 
 const Dashboard = ({ user={} }) => {
-    const [userBooks, setUserBooks] = useState(() => fetchData('/api/user-books', 'GET', {}, { token: user.token }));
+    const [status, setStatus] = useState();
     const [statuses] = useState(() => fetchData('/api/support/status', 'GET', {}, { token: user.token }));
+    const [userBooks, setUserBooks] = useState(() => fetchData('/api/user-books', 'GET', {}, { token: user.token }));
+    const [dictionaries] = useState(() => fetchData('/api/support/format-language-status', 'GET', {}, { token: user.token }));
+    
 
     const onFilterChange = (status) => {
         let option = '';
         if (status) {
             option = `?status=${status}`;
+        }
+        setStatus(status);
+        setUserBooks(() => fetchData(`/api/user-books${option}`, 'GET', {}, { token: user.token }));
+    };
+
+    const onPageChange = (page) => {
+        let option = `?page=${page}`;
+        if (status) {
+            option = `${option}&status=${status}`;
         }
         setUserBooks(() => fetchData(`/api/user-books${option}`, 'GET', {}, { token: user.token }));
     };
@@ -46,7 +58,7 @@ const Dashboard = ({ user={} }) => {
             <Row>
                 <Col>
                     <Suspense fallback={<Spinner animation="border" variant="primary" />}>
-                        <BooksList resource={userBooks} />
+                        <BooksList userBooks={userBooks} dictionaries={dictionaries} onPageChange={onPageChange} />
                     </Suspense>
                   </Col>
             </Row>

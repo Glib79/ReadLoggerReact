@@ -45,9 +45,17 @@ const en = {
         books: "Start typing to find a book..."  
     },
     booksList: {
+        added: "Book added to list: ",
         author: "Author(s)",
+        edited: "Last edited: ",
         endDate: "Reading end date",
+        format: "Book format: ",
+        language: "Book language: ",
         noBooks: "You have no books on your list yet.",
+        notes: "Your notes: ",
+        rating: "Your rating: ",
+        save: "Save",
+        size: "Book size: %{pages} pages",
         startDate: "Reading start date",
         status: "Book status",
         title: "Title"
@@ -55,7 +63,7 @@ const en = {
     dashboard: {
         addBook: "Add Book",
         statusFilterPlaceholder: "Filter by status",
-        welcome: "Dashboard after log in"
+        welcome: "Your books list"
     },
     format: {
         audiobook: "Audiobook",
@@ -80,7 +88,8 @@ const en = {
         2: "Below expectations",
         3: "Average",
         4: "Above expectations",
-        5: "Excelent"
+        5: "Excellent",
+        noRating: "No rating"
     },
     registerForm: {
         enterEmail: "Enter email",

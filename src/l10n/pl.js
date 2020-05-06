@@ -45,9 +45,17 @@ const pl = {
       books: "Zacznij pisać aby znaleźć książkę..."  
     },
     booksList:{
+        added: "Książka dodana do listy: ",
         author: "Autor(ży)",
+        edited: "Ostatnia edycja: ",
         endDate: "Koniec czytania",
+        format: "Format książki: ",
+        language: "Język książki: ",
         noBooks: "Nie masz jeszcze książek na swojej liście.",
+        notes: "Twoje notatki: ",
+        rating: "Twoja ocena: ",
+        save: "Zapisz",
+        size: "Wielkość książki w stronach: %{pages}",
         startDate: "Początek czytania",
         status: "Status książki",
         title: "Tytuł"
@@ -55,7 +63,7 @@ const pl = {
     dashboard: {
         addBook: "Dodaj książkę",
         statusFilterPlaceholder: "Filtruj po statusie",
-        welcome: "Dashboard po zalogowaniu"
+        welcome: "Lista Twoich książek"
     },
     format: {
         audiobook: "Audiobook",
@@ -80,7 +88,8 @@ const pl = {
         2: "Poniżej oczekiwań",
         3: "Przeciętna",
         4: "Powyżej oczekiwań",
-        5: "Wyśmienita"
+        5: "Wyśmienita",
+        noRating: "Brak oceny"
     },
     registerForm: {
         enterEmail: "Podaj email",
