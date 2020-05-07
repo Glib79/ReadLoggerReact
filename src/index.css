@@ -17,3 +17,7 @@
 .bg-abandoned {
     background-color: #fff0f0;
 }
+
+.language-selector {
+    width: 110px;
+}

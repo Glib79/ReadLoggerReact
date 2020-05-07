@@ -1,21 +1,31 @@
 import React from 'react';
 import { PropTypes } from "prop-types";
-import Form from 'react-bootstrap/Form';
 import { supportedLocales } from "../../config/i18n";
+import Select from 'react-select';
 
 const LanguageSelector = ({locale, onSetLocale}) => {
 
-  const onChangeLanguage = e => {
-    onSetLocale(e.target.value);
-  };
-
-  return (
-    <Form.Control as="select" value={locale} onChange={onChangeLanguage}>
-      {Object.keys(supportedLocales).map(language => 
-        <option key={language} value={language}>{supportedLocales[language]}</option>
-      )}
-    </Form.Control>
-  );
+    const onChangeLanguage = selected => {
+          onSetLocale(selected.value);
+    };
+    
+    const data = Object.keys(supportedLocales).map(lang => {
+        return {
+            value: lang,
+            label: supportedLocales[lang]
+        };
+    });
+    
+    const defLang = data.findIndex(row => row.value === locale);
+    
+    return (
+        <Select 
+            defaultValue={data[defLang]}
+            onChange={onChangeLanguage}
+            options={data}
+            className="language-selector"
+        />
+    );
 };
 
 LanguageSelector.propTypes = {
