@@ -49,6 +49,7 @@ const pl = {
         author: "Autor(ży)",
         edited: "Ostatnia edycja: ",
         endDate: "Koniec czytania",
+        endDateError: "To pole jest wymagane!",
         format: "Format książki: ",
         language: "Język książki: ",
         noBooks: "Nie masz jeszcze książek na swojej liście.",
@@ -57,6 +58,7 @@ const pl = {
         save: "Zapisz",
         size: "Wielkość książki w stronach: %{pages}",
         startDate: "Początek czytania",
+        startDateError: "To pole jest wymagane!",
         status: "Status książki",
         title: "Tytuł"
     },

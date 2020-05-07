@@ -49,6 +49,7 @@ const en = {
         author: "Author(s)",
         edited: "Last edited: ",
         endDate: "Reading end date",
+        endDateError: "This field is required!",
         format: "Book format: ",
         language: "Book language: ",
         noBooks: "You have no books on your list yet.",
@@ -57,6 +58,7 @@ const en = {
         save: "Save",
         size: "Book size: %{pages} pages",
         startDate: "Reading start date",
+        startDateError: "This field is required!",
         status: "Book status",
         title: "Title"
     },
