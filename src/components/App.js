@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import ShowMessages from './support/ShowMessages';
 import StatusBar from './template/StatusBar';
 
+import '../index.css';
 
 const App = () => {
   return (

@@ -15,7 +15,7 @@ import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Spinner from 'react-bootstrap/Spinner';
 
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 
 const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleErrors=f=>f }) => {
     const data = resource.read();

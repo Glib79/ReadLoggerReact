@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Translate, Localize, I18n } from 'react-redux-i18n';
 import axios from 'axios';
+import { addMessage } from '../../redux/actions/messages';
 import { prepareOptions, handleErrors } from '../../config/api';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
@@ -10,12 +11,14 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Pagination from 'react-bootstrap/Pagination';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
-import { BoxArrowDown, BoxArrowInUp, PencilSquare, XSquare } from 'react-bootstrap-icons';
+import Tooltip from 'react-bootstrap/Tooltip';
+import { BoxArrowDown, BoxArrowInRight, BoxArrowInUp, BoxArrowRight, BoxArrowUp } from 'react-bootstrap-icons';
 
-const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange=f=>f, handleErrors=f=>f }) => {
+const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange=f=>f, addMessage=f=>f, handleErrors=f=>f }) => {
     const data = userBooks.read();
     
     const dict = dictionaries.read();
@@ -67,6 +70,31 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
 
     const closeRow = id => {
         setRowData({});
+    };
+    
+    const deleteRow = id => {
+        const confirm = window.confirm(I18n.t('booksList.deleteConfirmation')); 
+        if (confirm === true) { 
+            setRowData({[id]: {
+                ...rowData[id],
+                loading: true
+            }});
+
+            const options = prepareOptions(`/api/user-book/${id}`, 'DELETE', null, { token: user.token });
+            axios(options)
+            .then(response => {
+                addMessage('booksList.successDelete', 'success');
+                setRowData({});
+                onPageChange(data.meta.page);
+            })
+            .catch(error => {
+                handleErrors(error);
+                setRowData({[id]: {
+                    ...rowData[id],
+                    loading: false
+                }});
+            });
+        }  
     };
     
     const openRow = id => {
@@ -339,16 +367,49 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                 }
                                 <Col xs='auto'>
                                     {!rowData[row.id] && 
-                                    <BoxArrowDown color='blue' onClick={e => openRow(row.id)} />}
+                                    <OverlayTrigger 
+                                        overlay={<Tooltip id={`tooltip-open-row-${row.id}`}>
+                                            <Translate value='booksList.tooltip.openRow' />
+                                        </Tooltip>}
+                                    >                    
+                                        <BoxArrowDown color='blue' className='cursor-pointer' onClick={e => openRow(row.id)} />
+                                    </OverlayTrigger>
+                                    }
                                     {rowData[row.id] && !rowData[row.id].editing &&
                                     <Fragment>
-                                        <BoxArrowInUp color='black' onClick={e => closeRow(row.id)} />
+                                        <OverlayTrigger 
+                                            overlay={<Tooltip id={`tooltip-close-row-${row.id}`}>
+                                                <Translate value='booksList.tooltip.closeRow' />
+                                            </Tooltip>}
+                                        >                    
+                                            <BoxArrowInUp color='black' className='cursor-pointer' onClick={e => closeRow(row.id)} />
+                                        </OverlayTrigger>
                                         <br />
-                                        <PencilSquare color='blue' className='mt-2' onClick={e => onClickEdit(row.id)} />
+                                        <OverlayTrigger 
+                                            overlay={<Tooltip id={`tooltip-edit-row-${row.id}`}>
+                                                <Translate value='booksList.tooltip.editRow' />
+                                            </Tooltip>}
+                                        >                    
+                                            <BoxArrowInRight color='blue' className='mt-2 cursor-pointer' onClick={e => onClickEdit(row.id)} />
+                                        </OverlayTrigger>
+                                        <br />
+                                        <OverlayTrigger 
+                                            overlay={<Tooltip id={`tooltip-delete-row-${row.id}`}>
+                                                <Translate value='booksList.tooltip.deleteRow' />
+                                            </Tooltip>}
+                                        >                    
+                                            <BoxArrowRight color='red' className='mt-2 cursor-pointer' onClick={e => deleteRow(row.id)} />
+                                        </OverlayTrigger>
                                     </Fragment> 
                                     }
                                     {rowData[row.id] && rowData[row.id].editing &&
-                                    <XSquare color='red' onClick={e => cancelEdit(row.id)} />
+                                    <OverlayTrigger 
+                                        overlay={<Tooltip id={`tooltip-cancel-row-${row.id}`}>
+                                            <Translate value='booksList.tooltip.cancelEditRow' />
+                                        </Tooltip>}
+                                    >                    
+                                        <BoxArrowUp color='black' className='cursor-pointer' onClick={e => cancelEdit(row.id)} />
+                                    </OverlayTrigger>
                                     }
                                 </Col>
                             </Row>
@@ -373,7 +434,7 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                     {rowData[row.id].editing
                                     ? <Col>
                                         <Row>
-                                            <Col xs="auto">
+                                            <Col xs="auto pt-2">
                                                 <Translate value='booksList.format' />
                                             </Col>
                                             <Col>
@@ -393,7 +454,7 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                     {rowData[row.id].editing 
                                     ? <Col>
                                         <Row>
-                                            <Col xs="auto">
+                                            <Col xs="auto pt-2">
                                                 <Translate value='booksList.language' />
                                             </Col>
                                             <Col>
@@ -415,7 +476,7 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                     {rowData[row.id].editing && rowData[row.id].visibility.rating
                                     ? <Col>
                                         <Row>
-                                            <Col xs='auto'>
+                                            <Col xs='auto pt-2'>
                                                 <Translate value='booksList.rating' />
                                             </Col>
                                             <Col>
@@ -508,6 +569,7 @@ BooksList.propTypes = {
   user: PropTypes.object.isRequired,
   userBooks: PropTypes.object.isRequired,
   onPageChange: PropTypes.func.isRequired,
+  addMessage: PropTypes.func.isRequired,
   handleErrors: PropTypes.func.isRequired
 };
 
@@ -523,6 +585,11 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    addMessage(message, type) {
+      dispatch(
+        addMessage(message, type)
+      );
+    },
     handleErrors(error) {
       dispatch(
         handleErrors(error)

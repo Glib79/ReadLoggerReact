@@ -47,6 +47,7 @@ const pl = {
     booksList:{
         added: "Książka dodana do listy: ",
         author: "Autor(ży)",
+        deleteConfirmation: "Proszę potwierdzić cheć usunięcia tej książki. Ta operacja nie może być cofnięta.",
         edited: "Ostatnia edycja: ",
         endDate: "Koniec czytania",
         endDateError: "To pole jest wymagane!",
@@ -60,7 +61,15 @@ const pl = {
         startDate: "Początek czytania",
         startDateError: "To pole jest wymagane!",
         status: "Status książki",
-        title: "Tytuł"
+        successDelete: "Książka została usunięta z Twojej listy.",
+        title: "Tytuł",
+        tooltip: {
+            cancelEditRow: "Anuluj edycję",
+            closeRow: "Ukryj szczegóły",
+            deleteRow: "Usuń książkę z listy",
+            editRow: "Edytuj",
+            openRow: "Pokaż szczegóły"
+        }
     },
     dashboard: {
         addBook: "Dodaj książkę",

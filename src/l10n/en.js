@@ -47,6 +47,7 @@ const en = {
     booksList: {
         added: "Book added to list: ",
         author: "Author(s)",
+        deleteConfirmation: "Please confirm that you would like to delete this book. This operation can not be reversed.",
         edited: "Last edited: ",
         endDate: "Reading end date",
         endDateError: "This field is required!",
@@ -60,7 +61,15 @@ const en = {
         startDate: "Reading start date",
         startDateError: "This field is required!",
         status: "Book status",
-        title: "Title"
+        successDelete: "Book was successfully removed from your list.",
+        title: "Title",
+        tooltip: {
+            cancelEditRow: "Cancel editing",
+            closeRow: "Hide details",
+            deleteRow: "Remove book from list",
+            editRow: "Edit",
+            openRow: "Show details"
+        }
     },
     dashboard: {
         addBook: "Add Book",
