@@ -25,6 +25,7 @@ const en = {
         bookStatus: "Book status",
         bookStartDate: "Start reading date",
         bookTitle: "To add book to your list find book on the list below.",
+        cancel: "Cancel",
         endDateError: "Reading end date is required and it must be later then Reading start date.",
         firstName: "Authors first name",
         lastName: "Authors last name",
@@ -47,7 +48,10 @@ const en = {
     booksList: {
         added: "Book added to list: ",
         author: "Author(s)",
+        cancelButton: "Cancel",
+        deleteButton: "Delete", 
         deleteConfirmation: "Please confirm that you would like to delete this book. This operation can not be reversed.",
+        editButton: "Edit",
         edited: "Last edited: ",
         endDate: "Reading end date",
         endDateError: "This field is required!",
@@ -56,7 +60,7 @@ const en = {
         noBooks: "You have no books on your list yet.",
         notes: "Your notes: ",
         rating: "Your rating: ",
-        save: "Save",
+        saveButton: "Save",
         size: "Book size: %{pages} pages",
         startDate: "Reading start date",
         startDateError: "This field is required!",
@@ -64,10 +68,7 @@ const en = {
         successDelete: "Book was successfully removed from your list.",
         title: "Title",
         tooltip: {
-            cancelEditRow: "Cancel editing",
             closeRow: "Hide details",
-            deleteRow: "Remove book from list",
-            editRow: "Edit",
             openRow: "Show details"
         }
     },

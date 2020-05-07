@@ -16,7 +16,7 @@ import Pagination from 'react-bootstrap/Pagination';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 import Tooltip from 'react-bootstrap/Tooltip';
-import { BoxArrowDown, BoxArrowInRight, BoxArrowInUp, BoxArrowRight, BoxArrowUp } from 'react-bootstrap-icons';
+import { CaretDownFill, CaretUpFill } from 'react-bootstrap-icons';
 
 const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange=f=>f, addMessage=f=>f, handleErrors=f=>f }) => {
     const data = userBooks.read();
@@ -180,6 +180,21 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
         return valid;
     };
     
+    const rowBackground = status => {
+        switch (parseInt(status)) {
+            case 1:
+                return 'bg-planned';
+            case 2:
+                return 'bg-during';
+            case 3:
+                return 'bg-finished';
+            case 4:
+                return 'bg-abandoned';
+            default:
+                return 'bg-light';
+        }
+    };
+    
     const cancelEdit = id => {
         setRowData({[id]: {
             ...rowData[id],
@@ -305,10 +320,9 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                     <Col><Translate value='booksList.status' /></Col>
                 </Row>
                 {data.data.map((row, i) => {
-                    let bg = i%2;
                     return <Fragment key={row.id}>
                     <Row 
-                        className={`border border-bottom-0 rounded-top pt-2 ${bg ? '' : 'bg-light'}`}
+                        className={`border border-bottom-0 rounded-top pt-2 ${rowBackground(row.status.id)}`}
                     >
                         <Col>
                             {row.book.title}<br />
@@ -372,69 +386,35 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                             <Translate value='booksList.tooltip.openRow' />
                                         </Tooltip>}
                                     >                    
-                                        <BoxArrowDown color='blue' className='cursor-pointer' onClick={e => openRow(row.id)} />
+                                        <CaretDownFill color='black' className='cursor-pointer' onClick={e => openRow(row.id)} />
                                     </OverlayTrigger>
                                     }
                                     {rowData[row.id] && !rowData[row.id].editing &&
-                                    <Fragment>
-                                        <OverlayTrigger 
-                                            overlay={<Tooltip id={`tooltip-close-row-${row.id}`}>
-                                                <Translate value='booksList.tooltip.closeRow' />
-                                            </Tooltip>}
-                                        >                    
-                                            <BoxArrowInUp color='black' className='cursor-pointer' onClick={e => closeRow(row.id)} />
-                                        </OverlayTrigger>
-                                        <br />
-                                        <OverlayTrigger 
-                                            overlay={<Tooltip id={`tooltip-edit-row-${row.id}`}>
-                                                <Translate value='booksList.tooltip.editRow' />
-                                            </Tooltip>}
-                                        >                    
-                                            <BoxArrowInRight color='blue' className='mt-2 cursor-pointer' onClick={e => onClickEdit(row.id)} />
-                                        </OverlayTrigger>
-                                        <br />
-                                        <OverlayTrigger 
-                                            overlay={<Tooltip id={`tooltip-delete-row-${row.id}`}>
-                                                <Translate value='booksList.tooltip.deleteRow' />
-                                            </Tooltip>}
-                                        >                    
-                                            <BoxArrowRight color='red' className='mt-2 cursor-pointer' onClick={e => deleteRow(row.id)} />
-                                        </OverlayTrigger>
-                                    </Fragment> 
-                                    }
-                                    {rowData[row.id] && rowData[row.id].editing &&
                                     <OverlayTrigger 
-                                        overlay={<Tooltip id={`tooltip-cancel-row-${row.id}`}>
-                                            <Translate value='booksList.tooltip.cancelEditRow' />
+                                        overlay={<Tooltip id={`tooltip-close-row-${row.id}`}>
+                                            <Translate value='booksList.tooltip.closeRow' />
                                         </Tooltip>}
                                     >                    
-                                        <BoxArrowUp color='black' className='cursor-pointer' onClick={e => cancelEdit(row.id)} />
+                                        <CaretUpFill color='black' className='cursor-pointer' onClick={e => closeRow(row.id)} />
                                     </OverlayTrigger>
                                     }
                                 </Col>
                             </Row>
                         </Col>
                     </Row>
-                    <Row className={`border border-top-0 rounded-bottom pb-2 ${bg ? '' : 'bg-light'}`}>
+                    <Row className={`border border-top-0 rounded-bottom pb-2 ${rowData.hasOwnProperty(row.id) ? 'bg-light' : rowBackground(row.status.id)}`}>
                         {rowData.hasOwnProperty(row.id) && rowData[row.id].loading &&
-                            <Col className="text-center">
+                            <Col className="text-center pt-3">
                                 <Spinner animation="border" variant="primary" />
                             </Col>
                         }
                         {rowData.hasOwnProperty(row.id) && !rowData[row.id].loading &&
-                            <Col>
-                                <hr />
+                            <Col className="pt-3">
                                 <Row>
-                                    <Col>
-                                        <Translate 
-                                            value='booksList.size' 
-                                            pages={rowData[row.id].book.size ? rowData[row.id].book.size : '-'}
-                                        />
-                                    </Col>
                                     {rowData[row.id].editing
                                     ? <Col>
                                         <Row>
-                                            <Col xs="auto pt-2">
+                                            <Col className="pt-2">
                                                 <Translate value='booksList.format' />
                                             </Col>
                                             <Col>
@@ -451,10 +431,18 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                         <Translate value={rowData[row.id].format.translationKey} />
                                     </Col>
                                     }
+                                    <Col>
+                                        <Translate 
+                                            value='booksList.size' 
+                                            pages={rowData[row.id].book.size ? rowData[row.id].book.size : '-'}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row>
                                     {rowData[row.id].editing 
                                     ? <Col>
                                         <Row>
-                                            <Col xs="auto pt-2">
+                                            <Col className="pt-2">
                                                 <Translate value='booksList.language' />
                                             </Col>
                                             <Col>
@@ -471,12 +459,16 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                         <Translate value={rowData[row.id].language.translationKey} />
                                     </Col>
                                     }
+                                    <Col>
+                                        <Translate value='booksList.added' />
+                                        <Localize value={rowData[row.id].createdAt} dateFormat="date.short" />
+                                    </Col>
                                 </Row>
                                 <Row>
                                     {rowData[row.id].editing && rowData[row.id].visibility.rating
                                     ? <Col>
                                         <Row>
-                                            <Col xs='auto pt-2'>
+                                            <Col className="pt-2">
                                                 <Translate value='booksList.rating' />
                                             </Col>
                                             <Col>
@@ -499,10 +491,6 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                     </Col>
                                     }
                                     <Col>
-                                        <Translate value='booksList.added' />
-                                        <Localize value={rowData[row.id].createdAt} dateFormat="date.short" />
-                                    </Col>
-                                    <Col>
                                         <Translate value='booksList.edited' />
                                         <Localize value={rowData[row.id].modifiedAt} dateFormat="date.short" />
                                     </Col>
@@ -517,24 +505,6 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                             value={editRow[row.id].notes} 
                                             onChange={e => onChangeValue(e, row.id, 'notes')} 
                                         />
-                                        <Button 
-                                            variant="primary" 
-                                            disabled={rowData[row.id].fetching} 
-                                            type={rowData[row.id].fetching ? "" : "submit"}
-                                            onClick={e => updateRow(e, row.id)}
-                                            className='mt-2'
-                                        >
-                                            {(rowData[row.id].fetching)
-                                              ? <Spinner 
-                                                  as="span" 
-                                                  animation="border"
-                                                  size="sm"
-                                                  role="status"
-                                                  aria-hidden="true"
-                                                />
-                                              : <Translate value='booksList.save' />
-                                            }
-                                        </Button>
                                     </Col>
                                     : <Col>
                                         <Translate value='booksList.notes' />
@@ -542,6 +512,56 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                     </Col>
                                     }
                                 </Row>
+                                <hr />
+                                {rowData[row.id].editing 
+                                ? <Row>
+                                    <Button 
+                                        variant="primary"
+                                        size="sm"
+                                        disabled={rowData[row.id].fetching} 
+                                        type={rowData[row.id].fetching ? "" : "submit"}
+                                        onClick={e => updateRow(e, row.id)}
+                                        className='ml-3'
+                                    >
+                                        {(rowData[row.id].fetching)
+                                          ? <Spinner 
+                                              as="span" 
+                                              animation="border"
+                                              size="sm"
+                                              role="status"
+                                              aria-hidden="true"
+                                            />
+                                          : <Translate value='booksList.saveButton' />
+                                        }
+                                    </Button>
+                                    <Button 
+                                        variant="outline-secondary"
+                                        size="sm"
+                                        className='ml-2'
+                                        onClick={e => cancelEdit(row.id)}
+                                    >
+                                        <Translate value='booksList.cancelButton' />
+                                    </Button>
+                                </Row>
+                                : <Row>
+                                    <Button 
+                                        variant="outline-primary" 
+                                        size="sm"
+                                        className="ml-3"
+                                        onClick={e => onClickEdit(row.id)}
+                                    >
+                                        <Translate value='booksList.editButton' />
+                                    </Button>
+                                    <Button 
+                                        variant="outline-danger"
+                                        size="sm"
+                                        className='ml-2'
+                                        onClick={e => deleteRow(row.id)}
+                                    >
+                                        <Translate value='booksList.deleteButton' />
+                                    </Button>
+                                </Row>
+                                }
                             </Col>
                         }
                     </Row>

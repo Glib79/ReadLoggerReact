@@ -25,6 +25,7 @@ const pl = {
         bookStatus: "Status książki",
         bookStartDate: "Data rozpoczęcia czytania",
         bookTitle: "Aby dodać książkę do swojej listy, znajdź ją na liście poniżej.",
+        cancel: "Anuluj",
         endDateError: "Data zakończenia czytania jest wymagana i musi być późniejsza niż data rozpoczęcia czytania.",
         firstName: "Imię autora",
         lastName: "Nazwisko autora",
@@ -46,8 +47,11 @@ const pl = {
     },
     booksList:{
         added: "Książka dodana do listy: ",
-        author: "Autor(ży)",
+        author: "Autor(zy)",
+        cancelButton: "Anuluj",
+        deleteButton: "Usuń",
         deleteConfirmation: "Proszę potwierdzić cheć usunięcia tej książki. Ta operacja nie może być cofnięta.",
+        editButton: "Edycja",
         edited: "Ostatnia edycja: ",
         endDate: "Koniec czytania",
         endDateError: "To pole jest wymagane!",
@@ -56,7 +60,7 @@ const pl = {
         noBooks: "Nie masz jeszcze książek na swojej liście.",
         notes: "Twoje notatki: ",
         rating: "Twoja ocena: ",
-        save: "Zapisz",
+        saveButton: "Zapisz",
         size: "Wielkość książki w stronach: %{pages}",
         startDate: "Początek czytania",
         startDateError: "To pole jest wymagane!",
@@ -64,10 +68,7 @@ const pl = {
         successDelete: "Książka została usunięta z Twojej listy.",
         title: "Tytuł",
         tooltip: {
-            cancelEditRow: "Anuluj edycję",
             closeRow: "Ukryj szczegóły",
-            deleteRow: "Usuń książkę z listy",
-            editRow: "Edytuj",
             openRow: "Pokaż szczegóły"
         }
     },

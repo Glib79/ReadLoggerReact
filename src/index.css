@@ -1,3 +1,19 @@
 .cursor-pointer {
     cursor: pointer;
 }
+
+.bg-planned {
+    background-color: #f0fdff;
+}
+
+.bg-during {
+    background-color: #f0fff0;
+}
+
+.bg-finished {
+    background-color: #f0f0f0;
+}
+
+.bg-abandoned {
+    background-color: #fff0f0;
+}

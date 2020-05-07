@@ -333,7 +333,7 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
                 />
             </Form.Group>
             {bookNotOnList &&
-            <Form.Group controlId="bookNewBookForm">
+            <Form.Group controlId="bookNewBookForm" className='pl-4'>
                 <Form.Group controlId="bookTitle">
                     <Form.Label>
                         <Translate value='addBookForm.bookNewBook' />  
@@ -426,6 +426,7 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
                         <Button variant="primary" onClick={onClickAddAuthor}>+</Button>
                     </Form.Group>
                 </Form.Row>
+                <hr />
             </Form.Group>
             }
             <Form.Group controlId="bookFormatSelect">
@@ -527,6 +528,9 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
                     />
                   : <Translate value='addBookForm.submit' />
                 }
+            </Button>
+            <Button variant='outline-secondary' className='ml-2' onClick={e => setBookAdded(true)}>
+                <Translate value='addBookForm.cancel' />
             </Button>
         </Form>
     );
