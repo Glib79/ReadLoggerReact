@@ -5,7 +5,9 @@ import { Translate, Localize, I18n } from 'react-redux-i18n';
 import axios from 'axios';
 import { addMessage } from '../../redux/actions/messages';
 import { prepareOptions, handleErrors } from '../../config/api';
-import Select from 'react-select';
+import RatingHandler from '../support/RatingHandler';
+import SelectHandler from '../support/SelectHandler';
+import StatusSelect, { prepareVisibility } from '../support/StatusSelect';
 import DatePicker from 'react-datepicker';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -20,38 +22,8 @@ import { CaretDownFill, CaretUpFill } from 'react-bootstrap-icons';
 
 const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange=f=>f, addMessage=f=>f, handleErrors=f=>f }) => {
     const data = userBooks.read();
-    
     const dict = dictionaries.read();
-    const dataFormat = dict.data.format.map(row => {
-        return {
-            value: row.id,
-            label: I18n.t(row.translationKey)
-        };
-    });
 
-    const dataLanguage = dict.data.language.map(row => {
-        return {
-            value: row.id,
-            symbol: row.symbol,
-            label: I18n.t(row.translationKey)
-        };
-    });
-    
-    const dataRating = [
-        {value: 1, label: I18n.t('rating.1')},
-        {value: 2, label: I18n.t('rating.2')},
-        {value: 3, label: I18n.t('rating.3')},
-        {value: 4, label: I18n.t('rating.4')},
-        {value: 5, label: I18n.t('rating.5')}
-    ];
-
-    const dataStatus = dict.data.status.map(row => {
-        return {
-            value: row.id,
-            label: I18n.t(row.translationKey)
-        };
-    });
-    
     const [rowData, setRowData] = useState({});
     const [editRow, setEditRow] = useState({});
 
@@ -169,7 +141,7 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
             }});
         }
 
-        if (rowData[id].visibility.endDate && !editRow[id].endDate) {
+        if (rowData[id].visibility.endDate && (!editRow[id].endDate || editRow[id].startDate.getTime() > editRow[id].endDate.getTime())) {
             valid = false;
             setRowData({[id]: {
                 ...rowData[id],
@@ -216,27 +188,21 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
         }});
     };
 
-    const onChangeStatus = (e, id) => {
-        const visibility = prepareVisibility(e.value);
+    const onChangeStatus = (status, visibility, id) => {
         setRowData({[id]: {
             ...rowData[id],
             visibility: visibility
         }});
     
-        onChangeSelect(e, id, 'status');
+        onChangeSelect(status, id, 'status');
     };
 
-    const onChangeSelect = (e, id, field) => {
+    const onChangeSelect = (val, id, field) => {
         let newValue;
         if (field === 'rating') {
-            newValue = e ? e.value : null;
+            newValue = val;
         } else {
-            if (e) {
-                newValue = dict.data[field].filter(row => row.id === e.value);
-                newValue = newValue[0];
-            } else {
-                newValue = {};
-            }
+            newValue = val ? dict.data[field].filter(row => row.id === val)[0] : {};
         }
         
         setEditRow({[id]: {
@@ -264,48 +230,11 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
             endDate: endDate
         }});
         
-        const availableStatuses = limitStatuses(rowData[id].status.id);
-        
         setRowData({[id]: {
             ...rowData[id],
             editing: true,
-            visibility: prepareVisibility(rowData[id].status.id),
-            availableStatuses: availableStatuses,
-            formatDefIndex: dataFormat.findIndex(row => row.value === rowData[id].format.id),
-            langDefIndex: dataLanguage.findIndex(row => row.value === rowData[id].language.id),
-            ratingDefIndex: dataRating.findIndex(row => row.value === parseInt(rowData[id].rating)),
-            statusDefIndex: availableStatuses.findIndex(row => row.value === rowData[id].status.id)
+            visibility: prepareVisibility(rowData[id].status.id)
         }});
-    };
-
-    const limitStatuses = currentStatus => {
-        switch (parseInt(currentStatus)) {
-            case 1:
-                return dataStatus;
-            case 2:
-                return dataStatus.filter(row => parseInt(row.value) >= 2);
-            case 3:
-                return dataStatus.filter(row => parseInt(row.value) === 3);
-            case 4:
-                return dataStatus.filter(row => parseInt(row.value) >= 2);
-            default:
-                return dataStatus;
-        }
-    };
-
-    const prepareVisibility = status => {
-        switch (parseInt(status)) {
-            case 1:
-                return {startDate: false, endDate: false, rating: false};
-            case 2:
-                return {startDate: true, endDate: false, rating: false};
-            case 3:
-                return {startDate: true, endDate: true, rating: true};
-            case 4:
-                return {startDate: true, endDate: false, rating: true};
-            default:
-                return {startDate: false, endDate: false, rating: false};
-        }
     };
 
     return (
@@ -358,6 +287,7 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                             <DatePicker
                                 locale={locale}
                                 selected={editRow[row.id].endDate}
+                                minDate={editRow[row.id].startDate}
                                 onChange={e => onChangeDate(e, row.id, 'endDate')}
                                 dateFormat={I18n.t('date.datepicker')}
                                 className="form-control"
@@ -367,12 +297,12 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                         }
                         <Col>
                             <Row>
-                                {rowData.hasOwnProperty(row.id) && rowData[row.id].editing && rowData[row.id].availableStatuses.length > 1
+                                {rowData.hasOwnProperty(row.id) && rowData[row.id].editing && parseInt(rowData[row.id].status.id) !== 3
                                 ? <Col>
-                                    <Select 
-                                        defaultValue={rowData[row.id].availableStatuses[rowData[row.id].statusDefIndex]}
-                                        onChange={e => onChangeStatus(e, row.id)}
-                                        options={rowData[row.id].availableStatuses}
+                                    <StatusSelect
+                                        data={dict.data.status}
+                                        defId={rowData[row.id].status.id}
+                                        onChange={(value, visibility) => onChangeStatus(value, visibility, row.id)}
                                     />
                                 </Col>
                                 : <Col>
@@ -418,10 +348,10 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                                 <Translate value='booksList.format' />
                                             </Col>
                                             <Col>
-                                                <Select 
-                                                    defaultValue={dataFormat[rowData[row.id].formatDefIndex]}
+                                                <SelectHandler 
+                                                    data={dict.data.format}
+                                                    defId={rowData[row.id].format.id}
                                                     onChange={e => onChangeSelect(e, row.id, 'format')}
-                                                    options={dataFormat}
                                                 />
                                             </Col>
                                         </Row>
@@ -446,10 +376,10 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                                 <Translate value='booksList.language' />
                                             </Col>
                                             <Col>
-                                                <Select 
-                                                    defaultValue={dataLanguage[rowData[row.id].langDefIndex]}
+                                                <SelectHandler 
+                                                    data={dict.data.language}
+                                                    defId={rowData[row.id].language.id}
                                                     onChange={e => onChangeSelect(e, row.id, 'language')}
-                                                    options={dataLanguage}
                                                 />
                                             </Col>
                                         </Row>
@@ -472,22 +402,18 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                                 <Translate value='booksList.rating' />
                                             </Col>
                                             <Col>
-                                                <Select 
-                                                    defaultValue={dataRating[rowData[row.id].ratingDefIndex]}
-                                                    placeholder={I18n.t('rating.noRating')}
-                                                    isClearable
+                                                <RatingHandler 
+                                                    rating={editRow[row.id].rating}
                                                     onChange={e => onChangeSelect(e, row.id, 'rating')}
-                                                    options={dataRating}
                                                 />
                                             </Col>
                                         </Row>
                                     </Col> 
                                     : <Col>
                                         <Translate value='booksList.rating' />
-                                        {rowData[row.id].rating 
-                                        ? <Translate value={`rating.${rowData[row.id].rating}`} />
-                                        : '-'
-                                        }
+                                        <RatingHandler 
+                                            rating={rowData[row.id].rating}
+                                        />
                                     </Col>
                                     }
                                     <Col>

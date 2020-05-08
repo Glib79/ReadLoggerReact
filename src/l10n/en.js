@@ -21,7 +21,7 @@ const en = {
         bookNewBook: "Add new book:",
         bookNotes: "Your notes about this book",
         bookNotOnList: "I can't find book on list.",
-        bookRating: "Your rating for this book",
+        bookRating: "Your rating for this book: ",
         bookStatus: "Book status",
         bookStartDate: "Start reading date",
         bookTitle: "To add book to your list find book on the list below.",
@@ -54,7 +54,7 @@ const en = {
         editButton: "Edit",
         edited: "Last edited: ",
         endDate: "Reading end date",
-        endDateError: "This field is required!",
+        endDateError: "This field is required and must be later then Reading start date!",
         format: "Book format: ",
         language: "Book language: ",
         noBooks: "You have no books on your list yet.",
@@ -94,14 +94,6 @@ const en = {
     },
     notFound: {
         notFound: "Route not found"
-    },
-    rating: {
-        1: "Poor",
-        2: "Below expectations",
-        3: "Average",
-        4: "Above expectations",
-        5: "Excellent",
-        noRating: "No rating"
     },
     registerForm: {
         enterEmail: "Enter email",

@@ -1,36 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
-import { I18n } from "react-redux-i18n";
+import SelectHandler from '../support/SelectHandler';
 
 const FilterSelect = ({ placeholder='', resource, type='', onChange=f=>f }) => {
     const data = resource.read();
 
-    const dataOptions = data.data[type].map(row => {
-        return {
-            value: row.id,
-            label: I18n.t(row.translationKey)
-        };
-    });
-    
-    const isObject = (a) => {
-        return (!!a) && (a.constructor === Object);
-    };
-    
-    const onChangeOption = selected => {
-        if (isObject(selected)) {
-            onChange(selected.value);
-        } else {
-            onChange(null);
-        }
-    };
-    
     return (
-        <Select 
+        <SelectHandler 
+            data={data.data[type]}
             placeholder={placeholder}
-            onChange={onChangeOption}
-            options={dataOptions}
-            isClearable
+            onChange={onChange}
             className="text-left"
         />
     );

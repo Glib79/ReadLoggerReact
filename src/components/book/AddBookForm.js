@@ -6,7 +6,9 @@ import axios from 'axios';
 import { Translate, I18n } from "react-redux-i18n";
 import { addMessage } from '../../redux/actions/messages';
 import { prepareOptions, handleErrors } from '../../config/api';
-import Select from 'react-select';
+import RatingHandler from '../support/RatingHandler';
+import SelectHandler from '../support/SelectHandler';
+import StatusSelect from '../support/StatusSelect';
 import DatePicker from 'react-datepicker';
 import AutoselectHandler from '../support/AutoselectHandler';
 import Button from 'react-bootstrap/Button';
@@ -19,39 +21,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleErrors=f=>f }) => {
     const data = resource.read();
-    const dataFormat = data.data.format.map(row => {
-        return {
-            value: row.id,
-            label: I18n.t(row.translationKey)
-        };
-    });
 
-    const dataLanguage = data.data.language.map(row => {
-        return {
-            value: row.id,
-            symbol: row.symbol,
-            label: I18n.t(row.translationKey)
-        };
-    });
-    
-    const defaultLanguage = dataLanguage.findIndex((element, index, array) => {
-        return element.symbol === locale;
-    });
-
-    const dataRating = [
-        {value: 1, label: I18n.t('rating.1')},
-        {value: 2, label: I18n.t('rating.2')},
-        {value: 3, label: I18n.t('rating.3')},
-        {value: 4, label: I18n.t('rating.4')},
-        {value: 5, label: I18n.t('rating.5')}
-    ];
-
-    const dataStatus = data.data.status.map(row => {
-        return {
-            value: row.id,
-            label: I18n.t(row.translationKey)
-        };
-    });
+    const defaultLanguage = data.data.language.filter(row => {
+        return row.symbol === locale;
+    })[0];
 
     const [fetching, setFetching] = useState(false);
     const [bookAdded, setBookAdded] = useState(false);
@@ -65,14 +38,14 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
 
     const [endDate, setEndDate] = useState(new Date());
     const [firstName, setFirstName] = useState('');
-    const [format, setFormat] = useState(dataFormat[0].value);
-    const [language, setLanguage] = useState(dataLanguage[defaultLanguage].value);
+    const [format, setFormat] = useState('1');
+    const [language, setLanguage] = useState(defaultLanguage.id);
     const [lastName, setLastName] = useState('');
     const [notes, setNotes] = useState('');
     const [rating, setRating] = useState();
     const [size, setSize] = useState('');
     const [startDate, setStartDate] = useState(new Date());
-    const [status, setStatus] = useState(dataStatus[0].value);
+    const [status, setStatus] = useState('1');
     const [subTitle, setSubTitle] = useState('');
     const [title, setTitle] = useState('');
      
@@ -201,7 +174,7 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
     };
 
     const onChangeEndDate = date => {
-       setEndDate(date);
+        setEndDate(date);
     };
   
     const onChangeFirstName = e => {
@@ -209,11 +182,11 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
     };
 
     const onChangeFormat = selected => {
-        setFormat(selected.value);
+        setFormat(selected);
     };
 
     const onChangeLanguage = selected => {
-        setLanguage(selected.value);
+        setLanguage(selected);
     };
 
     const onChangeLastName = e => {
@@ -224,12 +197,8 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
         setNotes(e.target.value);
     };
 
-    const onChangeRating = selected => {
-        if (!selected) {
-            setRating(null);  
-        } else {
-            setRating(selected.value);
-        }
+    const onChangeRating = value => {
+        setRating(value);
     };
 
     const onChangeSize = e => {
@@ -240,25 +209,9 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
        setStartDate(date);
     };
   
-    const onChangeStatus = selected => {
-        setStatus(selected.value);
-        
-        switch (parseInt(selected.value)) {
-            case 1:
-                setShowDates({startDate: false, endDate: false, rating: false});
-                break;
-            case 2:
-                setShowDates({startDate: true, endDate: false, rating: false});
-                break;
-            case 3:
-                setShowDates({startDate: true, endDate: true, rating: true});
-                break;
-            case 4:
-                setShowDates({startDate: true, endDate: false, rating: true});
-                break;
-            default:
-                setShowDates({startDate: false, endDate: false, rating: false});
-        }
+    const onChangeStatus = (value, visibility) => {
+        setStatus(value);
+        setShowDates(visibility);
     };
 
     const onChangeSubTitle = e => {
@@ -433,30 +386,30 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
                 <Form.Label>
                     <Translate value='addBookForm.bookFormat' />  
                 </Form.Label>
-                <Select 
-                    defaultValue={dataFormat[0]}
+                <SelectHandler 
+                    data={data.data.format}
+                    defId='1'
                     onChange={onChangeFormat}
-                    options={dataFormat}
                 />
             </Form.Group>
             <Form.Group controlId="bookLanguageSelect">
                 <Form.Label>
                     <Translate value='addBookForm.bookLanguage' />  
                 </Form.Label>
-                <Select 
-                    defaultValue={dataLanguage[defaultLanguage]}
+                <SelectHandler 
+                    data={data.data.language}
+                    defId={defaultLanguage.id}
                     onChange={onChangeLanguage}
-                    options={dataLanguage}
                 />
             </Form.Group>
             <Form.Group controlId="bookStatusSelect">
                 <Form.Label>
                     <Translate value='addBookForm.bookStatus' />  
                 </Form.Label>
-                <Select 
-                    defaultValue={dataStatus[0]}
+                <StatusSelect 
+                    data={data.data.status}
+                    defId='1'
                     onChange={onChangeStatus}
-                    options={dataStatus}
                 />
             </Form.Group>
             {showDates.startDate &&
@@ -498,11 +451,12 @@ const AddBookForm = ({ locale='en', resource, user={}, addMessage=f=>f, handleEr
             }
             {showDates.rating &&
             <Form.Group controlId="bookRatingSelect">
-                <Select 
-                    placeholder={I18n.t('addBookForm.bookRating')}
-                    isClearable
+                <Form.Label>
+                    <Translate value='addBookForm.bookRating' />
+                </Form.Label>
+                <RatingHandler 
+                    rating={rating}
                     onChange={onChangeRating}
-                    options={dataRating}
                 />
             </Form.Group>
             }

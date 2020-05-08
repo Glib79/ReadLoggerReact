@@ -21,7 +21,7 @@ const pl = {
         bookNewBook: "Dodaj nową książkę:",
         bookNotes: "Twoje notatki dotyczące książki",
         bookNotOnList: "Nie mogę zanleźć książki na liście.",
-        bookRating: "Twoja ocena książki",
+        bookRating: "Twoja ocena książki: ",
         bookStatus: "Status książki",
         bookStartDate: "Data rozpoczęcia czytania",
         bookTitle: "Aby dodać książkę do swojej listy, znajdź ją na liście poniżej.",
@@ -54,7 +54,7 @@ const pl = {
         editButton: "Edycja",
         edited: "Ostatnia edycja: ",
         endDate: "Koniec czytania",
-        endDateError: "To pole jest wymagane!",
+        endDateError: "To pole jest wymagane i musi być późniejsze niż Początek czytania!",
         format: "Format książki: ",
         language: "Język książki: ",
         noBooks: "Nie masz jeszcze książek na swojej liście.",
@@ -94,14 +94,6 @@ const pl = {
     },
     notFound: {
         notFound: "Strony nie znaleziono"
-    },
-    rating: {
-        1: "Kiepska",
-        2: "Poniżej oczekiwań",
-        3: "Przeciętna",
-        4: "Powyżej oczekiwań",
-        5: "Wyśmienita",
-        noRating: "Brak oceny"
     },
     registerForm: {
         enterEmail: "Podaj email",
