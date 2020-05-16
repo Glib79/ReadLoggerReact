@@ -75,7 +75,7 @@ const en = {
     dashboard: {
         addBook: "Add Book",
         statusFilterPlaceholder: "Filter by status",
-        welcome: "Your books list"
+        welcome: "My books list"
     },
     format: {
         audiobook: "Audiobook",
@@ -116,9 +116,9 @@ const en = {
     },
     statusBar: {
         brand: "Read Logger",
-        logIn: "Log In",
-        logOut: "Log Out",
-        register: "Register"
+        logIn: "Sign In",
+        logOut: "Sign Out",
+        register: "Sign Up"
     },
     welcome: {
         welcome: "Start page before log in"

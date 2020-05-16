@@ -75,7 +75,7 @@ const pl = {
     dashboard: {
         addBook: "Dodaj książkę",
         statusFilterPlaceholder: "Filtruj po statusie",
-        welcome: "Lista Twoich książek"
+        welcome: "Lista Moich książek"
     },
     format: {
         audiobook: "Audiobook",
