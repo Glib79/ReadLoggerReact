@@ -9,19 +9,9 @@ import AsyncSelect from 'react-select/async';
 const AutoselectHandler = ({ multiple=false, name='', responseToOptions=f=>f, user={}, value=[], setValue=f=>f, handleErrors=f=>f }) => {
     const [input, setInput] = useState('');
     
-    const handleInputChange = (newValue) => {
-        const inputValue = newValue.replace(/\W/g, '');
-        setInput(newValue);
-        return inputValue;
-    };
-    
-    const isObject = (a) => {
-        return (!!a) && (a.constructor === Object);
-    };
-    
     const onChange = (selected) => {
         if (multiple) {
-            if (isObject(selected)) {
+            if (selected) {
                 setValue([
                     ...value, 
                     {
@@ -32,13 +22,14 @@ const AutoselectHandler = ({ multiple=false, name='', responseToOptions=f=>f, us
                 setInput('');
             }
         } else {
-            if (isObject(selected)) {
+            if (selected) {
                 setValue({
                     id: selected.value,
                     label: selected.label
                 });
                 setInput(selected);
             } else {
+                setInput('');
                 setValue({});
             }
         }
@@ -57,14 +48,16 @@ const AutoselectHandler = ({ multiple=false, name='', responseToOptions=f=>f, us
     };
     
     return (
+            <div>
+    {console.log(input)}
         <AsyncSelect
             placeholder={I18n.t(`autoselectHandler.${name}`)}
             isClearable
             loadOptions={loadOptions}
-            onInputChange={handleInputChange}
             onChange={onChange}
             value={input}
         />
+        </div>
     );
 };
 
