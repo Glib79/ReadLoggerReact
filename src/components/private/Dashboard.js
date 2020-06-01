@@ -60,7 +60,7 @@ const Dashboard = ({ user={} }) => {
                     <Suspense fallback={<Spinner animation="border" variant="primary" />}>
                         <BooksList userBooks={userBooks} dictionaries={dictionaries} onPageChange={onPageChange} />
                     </Suspense>
-                  </Col>
+                </Col>
             </Row>
         </ErrorBoundary>
     );

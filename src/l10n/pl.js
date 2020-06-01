@@ -1,9 +1,10 @@
 const pl = {
     date: {
+        api: "YYYY-MM-DD",
+        datepicker: "MMM d yyyy",
         long: "Do MMMM YYYY",
         short: "D MMM YYYY",
-        datepicker: "MMM d yyyy",
-        api: "YYYY-MM-DD"
+        shortAndTime: "D MMM YYYY H:mm"
     },
     actions: {
         logout: "Został(a)eś wylogowan(a)y.",
@@ -46,22 +47,22 @@ const pl = {
       books: "Zacznij pisać aby znaleźć książkę..."  
     },
     booksList:{
-        added: "Książka dodana do listy: ",
         author: "Autor(zy)",
         cancelButton: "Anuluj",
         deleteButton: "Usuń",
         deleteConfirmation: "Proszę potwierdzić cheć usunięcia tej książki. Ta operacja nie może być cofnięta.",
         editButton: "Edycja",
-        edited: "Ostatnia edycja: ",
         endDate: "Koniec czytania",
         endDateError: "To pole jest wymagane i musi być późniejsze niż Początek czytania!",
         format: "Format książki: ",
+        historyButton: "Historia",
         language: "Język książki: ",
         noBooks: "Nie masz jeszcze książek na swojej liście.",
         notes: "Twoje notatki: ",
         rating: "Twoja ocena: ",
         saveButton: "Zapisz",
-        size: "Wielkość książki w stronach: %{pages}",
+        sizeLabel: "Wielkość książki: ",
+        size: "%{pages} stron(y)",
         startDate: "Początek czytania",
         startDateError: "To pole jest wymagane!",
         status: "Status książki",
@@ -82,9 +83,29 @@ const pl = {
         eBook: "E-book",
         paper: "Papierowa"
     },
+    historyList: {
+        action: "Akcja",
+        changes: "Co zostało zmienione",
+        column: {
+            endDate: "Koniec czytania: ",
+            format: "Format książki: ",
+            language: "Język książki: ",
+            notes: "Notatki: ",
+            rating: "Ocena: ",
+            startDate: "Koniec czytania: ",
+            status: "Status książki: "
+        },
+        date: "Data",
+        noResults: "Nie ma jeszcze historii."
+    },
     language: {
         en: "Angielski",
         pl: "Polski"
+    },
+    logAction: {
+      create : "Utworzono",
+      delete: "Skasowano",
+      update: "Zaktualizowano"
     },
     loginForm: {
         enterEmail: "Podaj email",

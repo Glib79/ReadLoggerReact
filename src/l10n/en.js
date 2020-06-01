@@ -1,9 +1,10 @@
 const en = {
     date: {
+        api: "YYYY-MM-DD",
+        datepicker: "MMM d yyyy",
         long: "MMMM Do, YYYY",
         short: "MMM D YYYY",
-        datepicker: "MMM d yyyy",
-        api: "YYYY-MM-DD"
+        shortAndTime: "MMM D YYYY h:mm a"
     },
     actions: {
         logout: "You were logged out.",
@@ -46,22 +47,22 @@ const en = {
         books: "Start typing to find a book..."  
     },
     booksList: {
-        added: "Book added to list: ",
         author: "Author(s)",
         cancelButton: "Cancel",
         deleteButton: "Delete", 
         deleteConfirmation: "Please confirm that you would like to delete this book. This operation can not be reversed.",
         editButton: "Edit",
-        edited: "Last edited: ",
         endDate: "Reading end date",
         endDateError: "This field is required and must be later then Reading start date!",
         format: "Book format: ",
+        historyButton: "History",
         language: "Book language: ",
         noBooks: "You have no books on your list yet.",
         notes: "Your notes: ",
         rating: "Your rating: ",
         saveButton: "Save",
-        size: "Book size: %{pages} pages",
+        sizeLabel: "Book size: ",
+        size: "%{pages} pages",
         startDate: "Reading start date",
         startDateError: "This field is required!",
         status: "Book status",
@@ -82,9 +83,29 @@ const en = {
         eBook: "E-book",
         paper: "Paper"
     },
+    historyList: {
+        action: "Action",
+        changes: "What changed",
+        column: {
+            endDate: "Reading end date: ",
+            format: "Book format: ",
+            language: "Book language: ",
+            notes: "Notes: ",
+            rating: "Rating: ",
+            startDate: "Reading start date: ",
+            status: "Book status: "
+        },
+        date: "Date",
+        noResults: "There is no history yet."
+    },
     language: {
         en: "English",
         pl: "Polish"
+    },
+    logAction: {
+      create : "Created",
+      delete: "Deleted",
+      update: "Updated"
     },
     loginForm: {
         enterEmail: "Enter email",

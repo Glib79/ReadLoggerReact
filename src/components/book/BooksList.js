@@ -1,10 +1,12 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, Suspense, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Translate, Localize, I18n } from 'react-redux-i18n';
 import axios from 'axios';
 import { addMessage } from '../../redux/actions/messages';
 import { prepareOptions, handleErrors } from '../../config/api';
+import { fetchData } from '../../api/endpoints';
+import HistoryList from './HistoryList';
 import RatingHandler from '../support/RatingHandler';
 import SelectHandler from '../support/SelectHandler';
 import StatusSelect, { prepareVisibility } from '../support/StatusSelect';
@@ -26,6 +28,7 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
 
     const [rowData, setRowData] = useState({});
     const [editRow, setEditRow] = useState({});
+    const [history, setHistory] = useState({});
 
     let paginationItems = [];
     for (let number = 1; number <= data.meta.pages; number++) {
@@ -84,6 +87,16 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
         .catch(error => {
           handleErrors(error);
         });
+    };
+    
+    const toggleHistory = id => {
+        if (!!!rowData[id].history) {
+            setHistory(() => fetchData(`/api/log/${id}`, 'GET', {}, { token: user.token }));
+        }
+        setRowData({[id]: {
+            ...rowData[id],
+            history: !!!rowData[id].history
+        }});
     };
     
     const updateRow = (e, id) => {
@@ -236,7 +249,11 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
             visibility: prepareVisibility(rowData[id].status.id)
         }});
     };
-
+    
+    const onHistoryPageChange = (id, page) => {
+        setHistory(() => fetchData(`/api/log/${id}?page=${page}`, 'GET', {}, { token: user.token }));
+    };
+    
     return (
         <div>
             {data.data.length > 0 &&
@@ -341,85 +358,61 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                         {rowData.hasOwnProperty(row.id) && !rowData[row.id].loading &&
                             <Col className="pt-3">
                                 <Row>
-                                    {rowData[row.id].editing
-                                    ? <Col>
-                                        <Row>
-                                            <Col className="pt-2">
-                                                <Translate value='booksList.format' />
-                                            </Col>
-                                            <Col>
-                                                <SelectHandler 
-                                                    data={dict.data.format}
-                                                    defId={rowData[row.id].format.id}
-                                                    onChange={e => onChangeSelect(e, row.id, 'format')}
-                                                />
-                                            </Col>
-                                        </Row>
+                                    <Col>
+                                        <Translate value='booksList.sizeLabel' />
                                     </Col>
-                                    : <Col>
-                                        <Translate value='booksList.format' />
-                                        <Translate value={rowData[row.id].format.translationKey} />
-                                    </Col>
-                                    }
                                     <Col>
                                         <Translate 
                                             value='booksList.size' 
                                             pages={rowData[row.id].book.size ? rowData[row.id].book.size : '-'}
                                         />
                                     </Col>
-                                </Row>
-                                <Row>
-                                    {rowData[row.id].editing 
-                                    ? <Col>
-                                        <Row>
-                                            <Col className="pt-2">
-                                                <Translate value='booksList.language' />
-                                            </Col>
-                                            <Col>
-                                                <SelectHandler 
-                                                    data={dict.data.language}
-                                                    defId={rowData[row.id].language.id}
-                                                    onChange={e => onChangeSelect(e, row.id, 'language')}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    </Col>
-                                    : <Col>
-                                        <Translate value='booksList.language' />
-                                        <Translate value={rowData[row.id].language.translationKey} />
-                                    </Col>
-                                    }
                                     <Col>
-                                        <Translate value='booksList.added' />
-                                        <Localize value={rowData[row.id].createdAt} dateFormat="date.short" />
+                                        <Translate value='booksList.format' />
                                     </Col>
+                                    <Col>
+                                        {rowData[row.id].editing
+                                        ? <SelectHandler 
+                                            data={dict.data.format}
+                                            defId={rowData[row.id].format.id}
+                                            onChange={e => onChangeSelect(e, row.id, 'format')}
+                                        />
+                                        : <Translate value={rowData[row.id].format.translationKey} />
+                                        }
+                                    </Col>
+                                    <Col></Col>
+                                    <Col></Col>
                                 </Row>
                                 <Row>
-                                    {rowData[row.id].editing && rowData[row.id].visibility.rating
-                                    ? <Col>
-                                        <Row>
-                                            <Col className="pt-2">
-                                                <Translate value='booksList.rating' />
-                                            </Col>
-                                            <Col>
-                                                <RatingHandler 
-                                                    rating={editRow[row.id].rating}
-                                                    onChange={e => onChangeSelect(e, row.id, 'rating')}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    </Col> 
-                                    : <Col>
+                                    <Col>
                                         <Translate value='booksList.rating' />
-                                        <RatingHandler 
+                                    </Col>
+                                    <Col>
+                                        {rowData[row.id].editing && rowData[row.id].visibility.rating
+                                        ? <RatingHandler 
+                                            rating={editRow[row.id].rating}
+                                            onChange={e => onChangeSelect(e, row.id, 'rating')}
+                                        />
+                                        : <RatingHandler 
                                             rating={rowData[row.id].rating}
                                         />
+                                        }
                                     </Col>
-                                    }
                                     <Col>
-                                        <Translate value='booksList.edited' />
-                                        <Localize value={rowData[row.id].modifiedAt} dateFormat="date.short" />
+                                        <Translate value='booksList.language' />
                                     </Col>
+                                    <Col>
+                                        {rowData[row.id].editing 
+                                        ? <SelectHandler 
+                                            data={dict.data.language}
+                                            defId={rowData[row.id].language.id}
+                                            onChange={e => onChangeSelect(e, row.id, 'language')}
+                                        />
+                                        : <Translate value={rowData[row.id].language.translationKey} />
+                                        }
+                                    </Col>
+                                    <Col></Col>
+                                    <Col></Col>
                                 </Row>
                                 <Row>
                                     {rowData[row.id].editing 
@@ -441,51 +434,88 @@ const BooksList = ({ dictionaries, locale='en', user={}, userBooks, onPageChange
                                 <hr />
                                 {rowData[row.id].editing 
                                 ? <Row>
-                                    <Button 
-                                        variant="primary"
-                                        size="sm"
-                                        disabled={rowData[row.id].fetching} 
-                                        type={rowData[row.id].fetching ? "" : "submit"}
-                                        onClick={e => updateRow(e, row.id)}
-                                        className='ml-3'
-                                    >
-                                        {(rowData[row.id].fetching)
-                                          ? <Spinner 
-                                              as="span" 
-                                              animation="border"
-                                              size="sm"
-                                              role="status"
-                                              aria-hidden="true"
-                                            />
-                                          : <Translate value='booksList.saveButton' />
-                                        }
-                                    </Button>
-                                    <Button 
-                                        variant="outline-secondary"
-                                        size="sm"
-                                        className='ml-2'
-                                        onClick={e => cancelEdit(row.id)}
-                                    >
-                                        <Translate value='booksList.cancelButton' />
-                                    </Button>
+                                    <Col>
+                                        <Button 
+                                            variant="primary"
+                                            size="sm"
+                                            disabled={rowData[row.id].fetching} 
+                                            type={rowData[row.id].fetching ? "" : "submit"}
+                                            onClick={e => updateRow(e, row.id)}
+                                            className='ml-3'
+                                        >
+                                            {(rowData[row.id].fetching)
+                                              ? <Spinner 
+                                                  as="span" 
+                                                  animation="border"
+                                                  size="sm"
+                                                  role="status"
+                                                  aria-hidden="true"
+                                                />
+                                              : <Translate value='booksList.saveButton' />
+                                            }
+                                        </Button>
+                                        <Button 
+                                            variant="outline-secondary"
+                                            size="sm"
+                                            className='ml-2'
+                                            onClick={e => cancelEdit(row.id)}
+                                        >
+                                            <Translate value='booksList.cancelButton' />
+                                        </Button>
+                                    </Col>
+                                    <Col className="text-center">
+                                        <Button 
+                                            variant="outline-primary" 
+                                            size="sm"
+                                            className="ml-3"
+                                            onClick={e => toggleHistory(row.id)}
+                                        >
+                                            <Translate value='booksList.historyButton' />
+                                        </Button>
+                                    </Col>
+                                    <Col></Col>
                                 </Row>
                                 : <Row>
-                                    <Button 
-                                        variant="outline-primary" 
-                                        size="sm"
-                                        className="ml-3"
-                                        onClick={e => onClickEdit(row.id)}
-                                    >
-                                        <Translate value='booksList.editButton' />
-                                    </Button>
-                                    <Button 
-                                        variant="outline-danger"
-                                        size="sm"
-                                        className='ml-2'
-                                        onClick={e => deleteRow(row.id)}
-                                    >
-                                        <Translate value='booksList.deleteButton' />
-                                    </Button>
+                                    <Col>
+                                        <Button 
+                                            variant="outline-primary" 
+                                            size="sm"
+                                            className="ml-3"
+                                            onClick={e => onClickEdit(row.id)}
+                                        >
+                                            <Translate value='booksList.editButton' />
+                                        </Button>
+                                    </Col>
+                                    <Col className="text-center">
+                                        <Button 
+                                            variant="outline-primary" 
+                                            size="sm"
+                                            className="ml-3"
+                                            onClick={e => toggleHistory(row.id)}
+                                        >
+                                            <Translate value='booksList.historyButton' />
+                                        </Button>
+                                    </Col>
+                                    <Col className="text-right">
+                                        <Button 
+                                            variant="outline-danger"
+                                            size="sm"
+                                            className='ml-2'
+                                            onClick={e => deleteRow(row.id)}
+                                        >
+                                            <Translate value='booksList.deleteButton' />
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                }
+                                {(rowData[row.id].history) &&
+                                <Row>
+                                    <Col>
+                                        <hr />
+                                        <Suspense fallback={<Spinner animation="border" variant="primary" />}>
+                                            <HistoryList id={row.id} history={history} dictionaries={dict} onPageChange={onHistoryPageChange} />
+                                        </Suspense>
+                                    </Col>
                                 </Row>
                                 }
                             </Col>
