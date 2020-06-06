@@ -13,7 +13,7 @@ const StatusBar = ({locale='en', user={}, onSetLocale=f=>f, onLogout=f=>f}) => {
     
   return (
     <Navbar bg="dark" variant="dark">
-      <Navbar.Brand href="/"><Translate value='statusBar.brand' /></Navbar.Brand>
+      <Navbar.Brand href={user.token ? "/dashboard" : "/"}><Translate value='statusBar.brand' /></Navbar.Brand>
       <Navbar.Collapse className="justify-content-end">
         <Nav className="mr-3">
           <Navbar.Text>

@@ -12,6 +12,6 @@ const Welcome = () => {
       </Col>
     </Row>
   );
-}
+};
 
 export default Welcome;

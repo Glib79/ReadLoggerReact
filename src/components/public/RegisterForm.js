@@ -6,6 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n';
 import axios from 'axios';
 import { addMessage } from '../../redux/actions/messages';
 import { prepareOptions, handleErrors } from '../../config/api';
+import Terms from './Terms';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -26,6 +27,7 @@ const RegisterForm = ({ loggedin=false, addMessage=f=>f, handleErrors=f=>f }) =>
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rPassword, setRPassword] = useState('');
+  const [terms, setTerms] = useState(false);
 
   const onUsernameChange = e => {
     setUsername(e.target.value);
@@ -88,6 +90,10 @@ const RegisterForm = ({ loggedin=false, addMessage=f=>f, handleErrors=f=>f }) =>
     return (pass === rPass) ? false : true;
   };
   
+  const showTerms = () => {
+    setTerms(true);  
+  };
+
   const testRegex = (value, expr) => {
     return (value.match(expr)) ? true : false;
   };
@@ -145,6 +151,12 @@ const RegisterForm = ({ loggedin=false, addMessage=f=>f, handleErrors=f=>f }) =>
               </Form.Text>
             }
           </Form.Group>
+          <div className='mb-3'>
+            <Translate value='registerForm.termsText' />
+            <span className='text-primary cursor-pointer' onClick={showTerms}>
+                <Translate value='registerForm.terms' />
+            </span>.
+          </div>
           <Button variant="primary" disabled={fetching} type={fetching ? "" : "submit"}>
             {(fetching)
               ? <Spinner 
@@ -159,6 +171,7 @@ const RegisterForm = ({ loggedin=false, addMessage=f=>f, handleErrors=f=>f }) =>
           </Button>
         </Form>
       </Col>
+      <Terms show={terms} setShow={setTerms} />
     </Row>
   );
 };
