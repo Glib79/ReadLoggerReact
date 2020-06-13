@@ -120,6 +120,13 @@ const en = {
         password: "Password",
         title: "Log In"
     },
+    notConfirmed: {
+        resendButton: "New confirmation e-mail",
+        resendMessage: "We will send you confirmation e-mail soon. Please check also your spam folder. Your old confirmation link will not be valid anymore.",
+        resendText: "If you haven't recived confirmation e-mail or for any other reasones you would like to us to send it again please click button below.",
+        text: "Please confirm your e-mail address before starting using the service.",
+        title: "Your e-mail address is not confirmed"
+    },
     notFound: {
         notFound: "Route not found"
     },

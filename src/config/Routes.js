@@ -11,6 +11,7 @@ import Welcome from '../components/public/Welcome';
 
 import AddBookHandler from '../components/private/AddBookHandler';
 import Dashboard from '../components/private/Dashboard';
+import NotConfirmed from '../components/private/NotConfirmed';
 
 const Routes = () => { 
   return (
@@ -22,6 +23,7 @@ const Routes = () => {
 
       <SecuredRoute path='/add-book' component={AddBookHandler} />
       <SecuredRoute path='/dashboard' component={Dashboard} />
+      <SecuredRoute path='/not-confirmed' component={NotConfirmed} />
 
       <Route component={NotFound} />
     </Switch>

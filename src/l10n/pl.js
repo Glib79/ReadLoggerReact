@@ -120,6 +120,13 @@ const pl = {
         password: "Hasło",
         title: "Logowanie"
     },
+    notConfirmed: {
+        resendButton: "Wyślij nowy e-mail",
+        resendMessage: "Wkrótce wyślemy nowy e-mail. Prosimy abyś sprawdził również folder ze spamem. Twój stary link potwierdzający adres e-mail stanie się nieważny.",
+        resendText: "Jeśli nie dostałeś e-maila z linkiem do potwierdzenia adresu e-mail lub z innych powowdów chcesz abyśmy go wysłali ponownie naciśnij guzik poniżej.",
+        text: "Prosimy o potwierdzenie adresu e-mail przed rozpoczęciem korzystania z serwisu.",
+        title: "Twój adres e-mail nie został potwierdzony"
+    },
     notFound: {
         notFound: "Strony nie znaleziono"
     },

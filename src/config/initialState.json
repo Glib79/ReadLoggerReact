@@ -10,6 +10,8 @@
     "messages": [],
     "user": {
         "token": null,
-        "data": {}
+        "data": {
+            "isConfirmed": false
+        }
     }
 }

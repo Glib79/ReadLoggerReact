@@ -74,30 +74,30 @@ const LoginForm = ({ fetching=false, loggedin=false, onLogin=f=>f }) => {
       </Col>
     </Row>
   );
-}
+};
 
 
 LoginForm.propTypes = {
   fetching: PropTypes.bool.isRequired,
   loggedin: PropTypes.bool.isRequired,
   onLogin: PropTypes.func.isRequired
-}
+};
 
 const mapStateToProps = (state) => {
   return {
     fetching: state.fetchers.login,
     loggedin: state.user.token ? true : false
-  }
-}
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
     onLogin(username, password) {
       dispatch(
         login(username, password)
-      )
+      );
     }
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

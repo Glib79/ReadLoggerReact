@@ -6,6 +6,6 @@ const constants = {
     USER_REMOVE_DATA: "USER_REMOVE_DATA",
     USER_SET_TOKEN: "USER_SET_TOKEN",
     USER_REMOVE_TOKEN: "USER_REMOVE_TOKEN"
-}
+};
 
 export default constants;
