@@ -73,6 +73,13 @@ const pl = {
             openRow: "Pokaż szczegóły"
         }
     },
+    confirm: {
+        emailText: "Potwierdzasz adres e-mail: ",
+        error: "porażka",
+        status: "Staus: ",
+        success: "sukces",
+        title: "Dziękujemy za potwierdzenie adresu e-mail!"
+    },
     dashboard: {
         addBook: "Dodaj książkę",
         statusFilterPlaceholder: "Filtruj po statusie",
@@ -126,7 +133,7 @@ const pl = {
         passwordsDifferent: "Hasła nie są identyczne",
         passwordSmallLetter: "Hasło zawiera małą literę",
         repeatPassword: "Powtórz hasło",
-        successMessage: "Konto zostało utworzone",
+        successMessage: "Konto zostało utworzone! Wkrótce wyślemy do ciebie e-mail, prosimy o kliknięcie linku w środku w celu potwierdzenia adresu e-mail.",
         termsText: "Rejestrując się zgadzasz się na nasze ",
         terms: "warunki",
         title: "Rejestracja"

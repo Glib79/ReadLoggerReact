@@ -13,7 +13,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 
-const RegisterForm = ({ loggedin=false, addMessage=f=>f, handleErrors=f=>f }) => {
+const RegisterForm = ({ locale='en', loggedin=false, addMessage=f=>f, handleErrors=f=>f }) => {
   const [fetching, setFetching] = useState(false);
   const [registered, setRegistered] = useState(false);
   const [errors, setErrors] = useState({
@@ -70,7 +70,7 @@ const RegisterForm = ({ loggedin=false, addMessage=f=>f, handleErrors=f=>f }) =>
     if (form.checkValidity() === true && !errors.password && !errors.rPassword && !fetching) {
       setFetching(true);
       
-      const options = prepareOptions('/auth/register', 'POST', {email: username, password: password});
+      const options = prepareOptions('/auth/register', 'POST', {email: username, password: password, language: locale});
       
       axios(options)
         .then(response => {
@@ -177,6 +177,7 @@ const RegisterForm = ({ loggedin=false, addMessage=f=>f, handleErrors=f=>f }) =>
 };
 
 RegisterForm.propTypes = {
+  locale: PropTypes.string.isRequired,
   loggedin: PropTypes.bool.isRequired,
   addMessage: PropTypes.func.isRequired,
   handleErrors: PropTypes.func.isRequired
@@ -184,6 +185,7 @@ RegisterForm.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
+    locale: state.i18n.locale,
     loggedin: state.user.token ? true : false
   };
 };

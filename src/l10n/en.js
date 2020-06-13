@@ -73,6 +73,13 @@ const en = {
             openRow: "Show details"
         }
     },
+    confirm: {
+        emailText: "You are confirming e-mail address: ",
+        error: "failed",
+        status: "Confirmation status: ",
+        success: "success",
+        title: "Thank you for confirming your e-mail!"
+    },
     dashboard: {
         addBook: "Add Book",
         statusFilterPlaceholder: "Filter by status",
@@ -126,7 +133,7 @@ const en = {
         passwordsDifferent: "Passwords are not identical",
         passwordSmallLetter: "Password contain small letter",
         repeatPassword: "Repeat password",
-        successMessage: "Account created",
+        successMessage: "Account created! We will send you e-mail soon, please click link inside to confirm your e-mail address.",
         termsText: "By registering you are agreeing to our ",
         terms: "terms",
         title: "Registration"
